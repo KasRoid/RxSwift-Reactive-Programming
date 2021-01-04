@@ -1,5 +1,6 @@
 import UIKit
 import RxSwift
+import RxCocoa
 
 let disposeBag = DisposeBag()
 
@@ -40,3 +41,58 @@ let subscription4 = observable4.subscribe(onNext: { element in
 })
 
 subscription4.dispose()
+
+let subject = PublishSubject<String>()
+subject.onNext("Issue 1")
+subject.subscribe { event in
+    print(event)
+}
+subject.onNext("Issue 2")
+subject.onNext("Issue 3")
+subject.onNext("Issue 4")
+subject.onCompleted()
+subject.onNext("Issue 5")
+subject.dispose()
+
+let subject2 = BehaviorSubject(value: "Initial Value")
+subject2.onNext("Last issue")
+subject2.subscribe { event in
+    print(event)
+}
+subject2.onNext("Issue 1")
+
+let subject3 = ReplaySubject<String>.create(bufferSize: 2)
+subject3.onNext("Issue 1")
+subject3.onNext("Issue 2")
+subject3.onNext("Issue 3")
+subject3.subscribe { event in
+    print(event)
+}
+
+subject3.onNext("Issue 4")
+subject3.onNext("Issue 5")
+subject3.onNext("Issue 6")
+
+subject3.subscribe {
+    print($0)
+}
+
+let variable = Variable([String]())
+variable.value.append("Item 1")
+variable.asObservable()
+    .subscribe {
+        print($0)
+}
+
+variable.value.append("Item 2")
+
+let relay = BehaviorRelay(value: ["Item 0"])
+relay.accept(relay.value + ["Item 1"])
+var value = relay.value
+value.append("Item 2")
+relay.accept(value)
+
+relay.asObservable()
+    .subscribe() {
+        print($0)
+    }
