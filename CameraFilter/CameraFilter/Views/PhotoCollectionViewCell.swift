@@ -8,5 +8,7 @@
 import UIKit
 
 class PhotoCollectionViewCell: UICollectionViewCell {
+    
+    // MARK: - Properties
     @IBOutlet weak var photoImageView: UIImageView!
 }

@@ -10,11 +10,13 @@ import RxSwift
 
 class ViewController: UIViewController {
 
+    // MARK: - Properties
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var applyFilterButton: UIButton!
     
     let disposeBag = DisposeBag()
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -29,21 +31,24 @@ class ViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
     }
-    
+}
+
+// MARK: - Helpers
+extension ViewController {
     private func updateUI(with image: UIImage) {
         photoImageView.image = image
         self.applyFilterButton.isHidden = false
     }
-    
+}
+
+// MARK: - Selectors
+extension ViewController {
     @IBAction func applyFilterButtonPressed(_ sender: UIButton) {
         guard let sourceImage = self.photoImageView.image else {
             return
         }
-        FilterService().applyFilter(to: sourceImage,
-                                    completion: { [weak self] filteredImage in
-                                        DispatchQueue.main.async {
-                                            self?.photoImageView.image = filteredImage
-                                        }
-                                    })
+        FilterService().applyFilter(to: sourceImage).subscribe(onNext: { [weak self] filteredImage in
+            self?.photoImageView.image = filteredImage
+        }).disposed(by: disposeBag)
     }
 }
