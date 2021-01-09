@@ -10,16 +10,24 @@ import Photos
 
 class PhotoCollectionViewController: UICollectionViewController {
     
+    private var images = [PHAsset]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         populatePhotos()
     }
     
     private func populatePhotos() {
-        PHPhotoLibrary.requestAuthorization { status in
+        PHPhotoLibrary.requestAuthorization { [weak self] status in
             switch status {
             case .authorized:
-                break
+                let assets = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: nil)
+                assets.enumerateObjects { (object, count, stop) in
+                    self?.images.append(object)
+                }
+                self?.images.reverse()
+                print(self?.images.count)
+//                self?.collectionView.reloadData()
             case .denied:
                 break
             case .limited:
