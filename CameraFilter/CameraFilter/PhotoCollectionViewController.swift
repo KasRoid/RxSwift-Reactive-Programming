@@ -7,8 +7,14 @@
 
 import UIKit
 import Photos
+import RxSwift
 
 class PhotoCollectionViewController: UICollectionViewController {
+    
+    private let selectedPhotoSubject = PublishSubject<UIImage>()
+    var selectedPhoto: Observable<UIImage> {
+        return selectedPhotoSubject.asObservable()
+    }
     
     private var images = [PHAsset]()
     
@@ -45,6 +51,26 @@ class PhotoCollectionViewController: UICollectionViewController {
 }
 
 extension PhotoCollectionViewController {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(#function)
+        let selectedAsset = images[indexPath.item]
+        PHImageManager.default().requestImage(for: selectedAsset,
+                                              targetSize: CGSize(width: 300, height: 300),
+                                              contentMode: .aspectFit,
+                                              options: nil,
+                                              resultHandler: { [weak self] image, info in
+                                                print("PHImageManager")
+                                                guard let info = info else { return }
+                                                let isDegradedImage = info["PHImageResultIsDegradedKey"] as! Bool
+                                                if !isDegradedImage {
+                                                    if let image = image {
+                                                        self?.selectedPhotoSubject.onNext(image)
+                                                        self?.dismiss(animated: true, completion: nil)
+                                                    }
+                                                }
+                                              })
+    }
+    
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
