@@ -100,13 +100,24 @@ let disposeBag = DisposeBag()
 
 // MARK: - Filtering Operators
 let strikes = PublishSubject<String>()
-strikes
-    .ignoreElements()
-    .subscribe { _ in
-        print("[Subsciption is called]")
-    }.disposed(by: disposeBag)
 
-strikes.onNext("A")
-strikes.onNext("B")
-strikes.onNext("C")
-strikes.onCompleted()
+//strikes
+//    .ignoreElements()
+//    .subscribe { _ in
+//        print("[Subsciption is called]")
+//    }.disposed(by: disposeBag)
+//
+//strikes.onNext("A")
+//strikes.onNext("B")
+//strikes.onNext("C")
+//strikes.onCompleted()
+
+strikes
+    .elementAt(2)
+    .subscribe(onNext: { _ in
+        print("You are out!")
+    }).disposed(by: disposeBag)
+
+strikes.onNext("X")
+strikes.onNext("X")
+strikes.onNext("X")
