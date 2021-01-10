@@ -16,6 +16,7 @@ class TaskListViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     private let disposeBag = DisposeBag()
     private var tasks = BehaviorRelay<[Task]>(value: [])
+    private var filteredTasks = [Task]()
     
     // MARK: - Lifecycle;
     override func viewDidLoad() {
@@ -25,13 +26,38 @@ class TaskListViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let naviVC = segue.destination as? UINavigationController,
-              let destVC = naviVC.viewControllers.first as? AddTaskViewController else { return }
+              let destVC = naviVC.viewControllers.first as? AddTaskViewController else { fatalError() }
         destVC.taskSubjectObservable
-            .subscribe(onNext: {
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                let priority = Priority(rawValue: self.prioritySegmentedControl.selectedSegmentIndex - 1)
                 var existingTasks = self.tasks.value
                 existingTasks.append($0)
                 self.tasks.accept(existingTasks)
+                self.filterTasks(by: priority)
             }).disposed(by: disposeBag)
+    }
+    
+    @IBAction func priorityValueChanged(_ segmentedControl: UISegmentedControl) {
+        let priority = Priority(rawValue: segmentedControl.selectedSegmentIndex - 1)
+        filterTasks(by: priority)
+    }
+}
+
+// MARK: - Helpers
+extension TaskListViewController {
+    private func filterTasks(by priority: Priority?) {
+        if priority == nil {
+            filteredTasks = self.tasks.value
+        } else {
+            self.tasks.map { tasks in
+                tasks.filter { task in
+                    task.priority == priority }
+            }.subscribe (onNext: { [weak self] tasks in
+                self?.filteredTasks = tasks
+            }).disposed(by: disposeBag)
+        }
+        print(filteredTasks)
     }
 }
 
@@ -45,9 +71,4 @@ extension TaskListViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskTableViewCell", for: indexPath)
         return cell
     }
-}
-
-// MARK: - UITableViewDelegate
-extension TaskListViewController: UITableViewDelegate {
-    
 }
