@@ -112,29 +112,35 @@ let strikes = PublishSubject<String>()
 //strikes.onNext("C")
 //strikes.onCompleted()
 
-strikes
-    .elementAt(2)
-    .subscribe(onNext: { _ in
-        print("You are out!")
-    }).disposed(by: disposeBag)
+//strikes
+//    .elementAt(2)
+//    .subscribe(onNext: { _ in
+//        print("You are out!")
+//    }).disposed(by: disposeBag)
+//
+//strikes.onNext("X")
+//strikes.onNext("X")
+//strikes.onNext("X")
+//
+//strikes
+//    .filter { (value) -> Bool in
+//        value == "X"
+//    }.subscribe(onNext: {
+//        print($0)
+//    }).disposed(by: disposeBag)
+//
+//strikes.onNext("a")
+//strikes.onNext("x")
+//strikes.onNext("X")
+//
+//Observable.of(1, 2, 3, 4, 5, 6, 7)
+//    .filter { $0 % 2 == 0 }
+//    .subscribe(onNext: {
+//        print($0)
+//    }).disposed(by: disposeBag)
 
-strikes.onNext("X")
-strikes.onNext("X")
-strikes.onNext("X")
-
-strikes
-    .filter { (value) -> Bool in
-        value == "X"
-    }.subscribe(onNext: {
-        print($0)
-    }).disposed(by: disposeBag)
-
-strikes.onNext("a")
-strikes.onNext("x")
-strikes.onNext("X")
-
-Observable.of(1, 2, 3, 4, 5, 6, 7)
-    .filter { $0 % 2 == 0 }
+Observable.of("A", "B", "C", "D", "E", "F")
+    .skip(3)
     .subscribe(onNext: {
         print($0)
     }).disposed(by: disposeBag)
