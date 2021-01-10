@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 class TaskListViewController: UIViewController {
     
@@ -14,7 +15,7 @@ class TaskListViewController: UIViewController {
     @IBOutlet weak var prioritySegmentedControl: UISegmentedControl!
     @IBOutlet weak var tableView: UITableView!
     private let disposeBag = DisposeBag()
-    private var tasks = Variable<[Task]>([])
+    private var tasks = BehaviorRelay<[Task]>(value: [])
     
     // MARK: - Lifecycle;
     override func viewDidLoad() {
@@ -27,7 +28,9 @@ class TaskListViewController: UIViewController {
               let destVC = naviVC.viewControllers.first as? AddTaskViewController else { return }
         destVC.taskSubjectObservable
             .subscribe(onNext: {
-                self.tasks.value.append($0)
+                var existingTasks = self.tasks.value
+                existingTasks.append($0)
+                self.tasks.accept(existingTasks)
             }).disposed(by: disposeBag)
     }
 }
