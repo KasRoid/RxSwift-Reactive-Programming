@@ -14,6 +14,7 @@ class TaskListViewController: UIViewController {
     @IBOutlet weak var prioritySegmentedControl: UISegmentedControl!
     @IBOutlet weak var tableView: UITableView!
     private let disposeBag = DisposeBag()
+    private var tasks = Variable<[Task]>([])
     
     // MARK: - Lifecycle;
     override func viewDidLoad() {
@@ -26,7 +27,7 @@ class TaskListViewController: UIViewController {
               let destVC = naviVC.viewControllers.first as? AddTaskViewController else { return }
         destVC.taskSubjectObservable
             .subscribe(onNext: {
-                print($0)
+                self.tasks.value.append($0)
             }).disposed(by: disposeBag)
     }
 }
