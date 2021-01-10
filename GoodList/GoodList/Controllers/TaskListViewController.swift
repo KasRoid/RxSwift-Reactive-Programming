@@ -57,18 +57,25 @@ extension TaskListViewController {
                 self?.filteredTasks = tasks
             }).disposed(by: disposeBag)
         }
-        print(filteredTasks)
+        updateTableView()
+    }
+    
+    private func updateTableView() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
 }
 
 // MARK: - UITableViewDataSource
 extension TaskListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return filteredTasks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskTableViewCell", for: indexPath)
+        cell.textLabel?.text = filteredTasks[indexPath.row].title
         return cell
     }
 }
