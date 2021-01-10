@@ -13,11 +13,21 @@ class TaskListViewController: UIViewController {
     // MARK: - Properties
     @IBOutlet weak var prioritySegmentedControl: UISegmentedControl!
     @IBOutlet weak var tableView: UITableView!
+    private let disposeBag = DisposeBag()
     
     // MARK: - Lifecycle;
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let naviVC = segue.destination as? UINavigationController,
+              let destVC = naviVC.viewControllers.first as? AddTaskViewController else { return }
+        destVC.taskSubjectObservable
+            .subscribe(onNext: {
+                print($0)
+            }).disposed(by: disposeBag)
     }
 }
 

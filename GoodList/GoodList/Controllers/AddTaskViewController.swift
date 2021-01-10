@@ -6,12 +6,18 @@
 //
 
 import UIKit
+import RxSwift
 
 class AddTaskViewController: UIViewController {
 
     // MARK: - Properties
     @IBOutlet weak var prioritySegmentedControl: UISegmentedControl!
     @IBOutlet weak var taskTitleTextField: UITextField!
+    
+    private let taskSubject = PublishSubject<Task>()
+    var taskSubjectObservable: Observable<Task> {
+        return taskSubject.asObservable()
+    }
     
     // MARK: - Lifecycle;
     override func viewDidLoad() {
@@ -24,5 +30,7 @@ class AddTaskViewController: UIViewController {
               let priority = Priority(rawValue: self.prioritySegmentedControl.selectedSegmentIndex) else { return }
         
         let task = Task(title: title, priority: priority)
+        taskSubject.onNext(task)
+        dismiss(animated: true, completion: nil)
     }
 }

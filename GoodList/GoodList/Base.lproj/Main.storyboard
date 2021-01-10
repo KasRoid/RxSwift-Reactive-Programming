@@ -20,7 +20,7 @@
                                 <rect key="frame" x="69.5" y="108" width="275" height="32"/>
                                 <segments>
                                     <segment title="All"/>
-                                    <segment title="Hight"/>
+                                    <segment title="High"/>
                                     <segment title="Medium"/>
                                     <segment title="Low"/>
                                 </segments>
