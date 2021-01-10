@@ -139,8 +139,32 @@ let strikes = PublishSubject<String>()
 //        print($0)
 //    }).disposed(by: disposeBag)
 
-Observable.of("A", "B", "C", "D", "E", "F")
-    .skip(3)
-    .subscribe(onNext: {
+//Observable.of("A", "B", "C", "D", "E", "F")
+//    .skip(3)
+//    .subscribe(onNext: {
+//        print($0)
+//    }).disposed(by: disposeBag)
+
+//Observable.of("A", "B", "C", "D", "E", "F")
+
+
+//Observable.of(0, 0, 2, 3, 4, 4)
+//    .skipWhile{ $0 % 2 == 0 }
+//    .subscribe(onNext: {
+//        print($0)
+//    }).disposed(by: disposeBag)
+
+let subject = PublishSubject<String>()
+let trigger = PublishSubject<String>()
+
+subject
+    .skipUntil(trigger)
+    .subscribe {
         print($0)
-    }).disposed(by: disposeBag)
+    }.disposed(by: disposeBag)
+
+subject.onNext("A")
+trigger.onNext("Trigger")
+subject.onNext("B")
+subject.onNext("C")
+subject.onNext("D")
