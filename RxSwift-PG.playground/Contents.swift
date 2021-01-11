@@ -209,23 +209,105 @@ let strikes = PublishSubject<String>()
 //        print($0)
 //    })
 
-struct Student {
-    var score: BehaviorRelay<Int>
-}
+//struct Student {
+//    var score: BehaviorRelay<Int>
+//}
+//
+//let john = Student(score: BehaviorRelay(value: 75))
+//let mary = Student(score: BehaviorRelay(value: 95))
+//
+//let student = PublishSubject<Student>()
+//student.asObserver()
+//    .flatMapLatest { return $0.score.asObservable() }
+//    .subscribe(onNext: { print($0) })
+//    .disposed(by: disposeBag)
+//
+//student.onNext(john)
+//john.score.accept(100)
+//
+//student.onNext(mary)
+//
+//john.score.accept(43)
+//mary.score.accept(80)
 
-let john = Student(score: BehaviorRelay(value: 75))
-let mary = Student(score: BehaviorRelay(value: 95))
 
-let student = PublishSubject<Student>()
-student.asObserver()
-    .flatMapLatest { return $0.score.asObservable() }
-    .subscribe(onNext: { print($0) })
-    .disposed(by: disposeBag)
+// MARK: - Combining Operators
+//let numbers = Observable.of(2, 3, 4)
+//let observable = numbers.startWith(1)
+//observable.subscribe(onNext: {
+//    print($0)
+//}).disposed(by: disposeBag)
 
-student.onNext(john)
-john.score.accept(100)
+let first = Observable.of(1, 2, 3)
+let second = Observable.of(4, 5, 6)
+let observable = Observable.concat([first, second])
+observable.subscribe(onNext: {
+    print($0)
+})
 
-student.onNext(mary)
+//let left = PublishSubject<Int>()
+//let right = PublishSubject<Int>()
+//let source = Observable.of(left.asObservable(), right.asObservable())
+//let observable = source.merge()
+//
+//observable.subscribe(onNext: {
+//    print($0)
+//}).disposed(by: disposeBag)
+//
+//left.onNext(5)
+//left.onNext(3)
+//right.onNext(2)
+//right.onNext(1)
+//left.onNext(99)
 
-john.score.accept(43)
-mary.score.accept(80)
+//let left = PublishSubject<Int>()
+//let right = PublishSubject<Int>()
+//
+//let observable = Observable.combineLatest(left, right,
+//                                          resultSelector: {lastLeft, lastRight in
+//                                            "\(lastLeft) \(lastRight)"
+//                                          })
+//
+//let dispoable = observable.subscribe(onNext: {
+//    print($0)
+//})
+//
+//left.onNext(45)
+//right.onNext(1)
+//left.onNext(30)
+//right.onNext(1)
+//right.onNext(2)
+
+//let button = PublishSubject<Void>()
+//let textField = PublishSubject<String>()
+//
+//let observable = button.withLatestFrom(textField)
+//let disposable = observable.subscribe(onNext: {
+//    print($0)
+//})
+//
+//textField.onNext("Sw")
+//textField.onNext("Swif")
+//textField.onNext("Swift")
+//textField.onNext("Swift Rocks!")
+//
+//button.onNext(())
+//button.onNext(())
+
+//let source = Observable.of(1, 2, 3)
+//source.reduce(0, accumulator: +)
+//    .subscribe(onNext: {
+//        print($0)
+//    }).disposed(by: disposeBag)
+//
+//source.reduce(0, accumulator: { summary, newValue in
+//    return summary + newValue
+//}).subscribe(onNext: {
+//    print($0)
+//}).disposed(by: disposeBag)
+
+//let source = Observable.of(1, 2, 3, 4, 5)
+//source.scan(0, accumulator: +)
+//    .subscribe(onNext: {
+//        print($0)
+//    }).disposed(by: disposeBag)
