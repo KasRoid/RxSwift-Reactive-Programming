@@ -28,6 +28,20 @@ class NewsTableViewController: UITableViewController {
 extension NewsTableViewController {
     private func populateNews() {
         let url = URL(string: "https://newsapi.org/v2/top-headlines?country=kr&apiKey=")!
+        let resource = Resource<ArticlesList>(url: url)
+        URLRequest.load(resource: ArticlesList.all)
+            .subscribe(onNext: { [weak self] result in
+                if let result = result {
+                    self?.articles = result.articles
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                    }
+                }
+            }).disposed(by: disposeBag)
+    }
+    
+    private func populateNews2() {
+        let url = URL(string: "https://newsapi.org/v2/top-headlines?country=kr&apiKey=")!
         Observable.just(url)
             .flatMap { url -> Observable<Data> in
                 let request = URLRequest(url: url)
@@ -45,6 +59,7 @@ extension NewsTableViewController {
     }
 }
 
+// MARK: - TableView DataSource
 extension NewsTableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
