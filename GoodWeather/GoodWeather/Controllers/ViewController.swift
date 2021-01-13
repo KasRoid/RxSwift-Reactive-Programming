@@ -49,12 +49,14 @@ class ViewController: UIViewController {
         guard let cityEncoded = city.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed),
               let url = URL.urlForWeatherAPI(city: cityEncoded) else { return }
         let resource = Resource<WeatherResult>(url: url)
-        URLRequest.load(resource: resource)
+        let search = URLRequest.load(resource: resource)
             .observeOn(MainScheduler.instance)
             .catchErrorJustReturn(WeatherResult.empty)
-            .subscribe(onNext: { result in
-                let weather = result.main
-                self.displayWeather(weather)
-            }).disposed(by: disposeBag)
+        search.map {"\($0.main.temp) ₣"}
+            .bind(to: temperatureLbel.rx.text)
+            .disposed(by: disposeBag)
+        search.map {"\($0.main.humidity) 💧"}
+            .bind(to: humidityLabel.rx.text)
+            .disposed(by: disposeBag)
     }
 }
