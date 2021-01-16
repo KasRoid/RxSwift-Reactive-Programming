@@ -56,6 +56,7 @@ class ViewController: UIViewController {
 //            .catchErrorJustReturn(WeatherResult.empty)
   
         let search = URLRequest.load(resource: resource)
+            .retry(3)
             .catchError { error in
                 print(error.localizedDescription)
                 return Observable.just(WeatherResult.empty)
